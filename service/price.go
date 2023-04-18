@@ -1,11 +1,14 @@
-package util
+package gold_price
 
 import (
 	"errors"
 	"gold-price/model"
 )
 
-func Price(brand string) (string, error) {
+const BASE_MESSAGE_TEMPLATE = "\n%s\n\t黄金基础价格：%f\n\t投资金价格：%f\n\t回收价格: %f"
+const BRAND_MESSAGE_TEMPLATE = "\n%s\n\t黄金价格：%f\n\t铂金价格：%f"
+
+func price(brand string) (string, error) {
 
 	switch brand {
 

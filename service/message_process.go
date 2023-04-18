@@ -13,7 +13,7 @@ func atMessageHandler(event *dto.WSPayload, messageData *dto.WSATMessageData) er
 
 	var content = ""
 
-	content, err := util.Price(res.Cmd)
+	content, err := price(res.Cmd)
 	if err != nil {
 		content = defaultContent
 	}
