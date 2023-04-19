@@ -21,7 +21,7 @@ func catchErrHandler(messageData *dto.WSATMessageData) {
 	if r := recover(); r != nil {
 		log.Error("catchErrHandler: ", r)
 		content := time.Now().String() + " atMessageHandler出现了不知道是什么玩意的异常"
-		util.PostMessage(api, ctx, args.ChannelId, messageData, content)
+		util.PostMessage(api, ctx, args.ChannelId, messageData.ID, content)
 	}
 }
 
@@ -47,7 +47,7 @@ func atMessageHandler(event *dto.WSPayload, messageData *dto.WSATMessageData) er
 	log.Info(content)
 
 	// 发消息
-	util.PostMessage(api, ctx, args.ChannelId, messageData, content)
+	util.PostMessage(api, ctx, args.ChannelId, messageData.ID, content)
 
 	return nil
 }

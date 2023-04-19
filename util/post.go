@@ -9,9 +9,9 @@ import (
 	"net/http"
 )
 
-func PostMessage(api openapi.OpenAPI, ctx context.Context, channelId string, data *dto.WSATMessageData, content string) {
+func PostMessage(api openapi.OpenAPI, ctx context.Context, channelId string, msgId string, content string) {
 	api.PostMessage(ctx, channelId, &dto.MessageToCreate{
-		MsgID:   data.ID,
+		MsgID:   msgId,
 		Content: content,
 	})
 }
