@@ -48,10 +48,8 @@ func price(brand string) (string, error) {
 	case model.LM:
 		return getLMPrice()
 	default:
-		return "", errors.New("未知品牌: " + brand)
+		return "err", errors.New("未知品牌: " + brand)
 	}
-
-	return "", nil
 }
 
 func formatUrl(url string, productCodes []model.ProductCode) string {
@@ -76,14 +74,14 @@ func formatFloatPrice(price float64) string {
 	return result
 }
 
-func getTodayPrice() (string, error) {
-	url := formatUrl(URL_PRICE, []model.ProductCode{model.TpBase_JO_52683, model.TpBase_JO_52684, model.TpBase_JO_52685})
+func getRespMap(productCodes []model.ProductCode) (map[string]interface{}, error) {
+	url := formatUrl(URL_PRICE, productCodes)
 	respBody, err := util.Get(url)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	respBody = strings.ReplaceAll(respBody, QUOTE_JSON, "")
-	log.Infof(respBody)
+	log.Info(respBody)
 	// 重组resp
 
 	//var codePrice model.CodePrice
@@ -92,7 +90,16 @@ func getTodayPrice() (string, error) {
 	flag := json2Map[FLAG]
 	tmp := fmt.Sprint(flag)
 	if tmp != "true" {
-		return "", errors.New("请求接口失败: " + url)
+		return nil, errors.New("请求接口失败: " + url)
+	}
+	return json2Map, nil
+}
+
+func getTodayPrice() (string, error) {
+	json2Map, err := getRespMap([]model.ProductCode{model.TpBase_JO_52683, model.TpBase_JO_52684, model.TpBase_JO_52685})
+	if err != nil {
+		// 获取响应结果失败
+		return "err", err
 	}
 
 	baseGold := json2Map[model.TpBase_JO_52683.Code]
@@ -108,9 +115,9 @@ func getTodayPrice() (string, error) {
 	var goldCp model.CodePrice
 	var tzGoldCp model.CodePrice
 	var hsGoldCp model.CodePrice
-	err = json.Unmarshal([]byte(goldJson), &goldCp)
-	err = json.Unmarshal([]byte(tzGoldJson), &tzGoldCp)
-	err = json.Unmarshal([]byte(hsGoldJson), &hsGoldCp)
+	json.Unmarshal([]byte(goldJson), &goldCp)
+	json.Unmarshal([]byte(tzGoldJson), &tzGoldCp)
+	json.Unmarshal([]byte(hsGoldJson), &hsGoldCp)
 
 	content := fmt.Sprintf(BASE_MESSAGE_TEMPLATE, model.TodayPrice,
 		goldCp.ShowName, formatFloatPrice(goldCp.Q1),

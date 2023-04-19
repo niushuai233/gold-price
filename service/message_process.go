@@ -25,7 +25,12 @@ func atMessageHandler(event *dto.WSPayload, messageData *dto.WSATMessageData) er
 
 	content, err := price(res.Cmd)
 	if err != nil {
-		content = defaultContent
+		log.Error(err)
+		if content == "err" {
+			content = "\n" + err.Error()
+		} else {
+			content = defaultContent
+		}
 	}
 
 	log.Info(content)
