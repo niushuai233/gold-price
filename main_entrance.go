@@ -43,7 +43,7 @@ func parseStartArgs() *model.StartArgs {
 	flag.Parse()
 
 	if appId == 0 || token == "" || channelId == "" {
-		log.Error("请检查appId, token, channel三个必填参数值是否均存在")
+		log.Error("请检查appId, token, channelId三个必填参数值是否均存在")
 		return nil
 	}
 
