@@ -18,7 +18,7 @@ const (
 	CURR_TIMES             = "CURR_TIMES"
 	QUOTE_JSON             = "var quote_json ="
 	BASE_MESSAGE_TEMPLATE  = "\n%s\n  > %s：%s\n  > %s：%s\n  > %s：%s"
-	BRAND_MESSAGE_TEMPLATE = "\n%s\n\t%s：%f\n\t%s：%f"
+	BRAND_MESSAGE_TEMPLATE = "\n%s\n  > %s：%s\n  > %s：%s"
 )
 
 const (
@@ -26,6 +26,31 @@ const (
 
 	URL_HISTORY_PRICE = "https://api.jijinhao.com/quoteCenter/history.htm?code=CODES&style=3&pageSize=10&needField=128,129,70&currentPage=1&_=1681867495109"
 )
+
+func formatUrl(url string, productCodes []model.ProductCode) string {
+
+	target := ""
+	for index, productCode := range productCodes {
+		target = target + productCode.Code
+		if index != len(productCodes)-1 {
+			target = target + ","
+		}
+	}
+
+	return strings.ReplaceAll(strings.ReplaceAll(url, CODES, target), CURR_TIMES, strconv.FormatInt(time.Now().UnixMilli(), 10))
+}
+
+func formatFloatPrice(price float64) string {
+
+	result := strconv.FormatFloat(price, 'f', 6, 64)
+	for strings.HasSuffix(result, "0") {
+		result = strings.TrimSuffix(result, "0")
+	}
+	for strings.HasSuffix(result, ".") {
+		result = strings.TrimSuffix(result, ".")
+	}
+	return result
+}
 
 func price(brand string) (string, error) {
 	log.Info("brand: ", brand)
@@ -52,28 +77,6 @@ func price(brand string) (string, error) {
 	}
 }
 
-func formatUrl(url string, productCodes []model.ProductCode) string {
-
-	target := ""
-	for index, productCode := range productCodes {
-		target = target + productCode.Code
-		if index != len(productCodes)-1 {
-			target = target + ","
-		}
-	}
-
-	return strings.ReplaceAll(strings.ReplaceAll(url, CODES, target), CURR_TIMES, strconv.FormatInt(time.Now().UnixMilli(), 10))
-}
-
-func formatFloatPrice(price float64) string {
-
-	result := strconv.FormatFloat(price, 'f', 6, 64)
-	for strings.HasSuffix(result, "0") {
-		result = strings.TrimSuffix(result, "0")
-	}
-	return result
-}
-
 func getRespMap(productCodes []model.ProductCode) (map[string]interface{}, error) {
 	url := formatUrl(URL_PRICE, productCodes)
 	respBody, err := util.Get(url)
@@ -95,20 +98,29 @@ func getRespMap(productCodes []model.ProductCode) (map[string]interface{}, error
 	return json2Map, nil
 }
 
+func goldPrice(brand string, tmpMap map[string]interface{}, goldProduct model.ProductCode, ptGoldProduct model.ProductCode) (model.CodePrice, model.CodePrice) {
+	goldJson, _ := util.Map2Json(tmpMap[goldProduct.Code].(map[string]interface{}))
+	ptGoldJson, _ := util.Map2Json(tmpMap[ptGoldProduct.Code].(map[string]interface{}))
+
+	log.Info(brand, goldJson, ptGoldJson)
+
+	var goldCp model.CodePrice
+	var ptGoldCp model.CodePrice
+	json.Unmarshal([]byte(goldJson), &goldCp)
+	json.Unmarshal([]byte(ptGoldJson), &ptGoldCp)
+	return goldCp, ptGoldCp
+}
+
 func getTodayPrice() (string, error) {
-	json2Map, err := getRespMap([]model.ProductCode{model.TpBase_JO_52683, model.TpBase_JO_52684, model.TpBase_JO_52685})
+	baseMap, err := getRespMap([]model.ProductCode{model.TpBase_JO_52683, model.TpBase_JO_52684, model.TpBase_JO_52685})
 	if err != nil {
 		// 获取响应结果失败
 		return "err", err
 	}
 
-	baseGold := json2Map[model.TpBase_JO_52683.Code]
-	baseGold_TZ := json2Map[model.TpBase_JO_52684.Code]
-	baseGold_TZ_HS := json2Map[model.TpBase_JO_52685.Code]
-
-	goldJson, _ := util.Map2Json(baseGold.(map[string]interface{}))
-	tzGoldJson, _ := util.Map2Json(baseGold_TZ.(map[string]interface{}))
-	hsGoldJson, _ := util.Map2Json(baseGold_TZ_HS.(map[string]interface{}))
+	goldJson, _ := util.Map2Json(baseMap[model.TpBase_JO_52683.Code].(map[string]interface{}))
+	tzGoldJson, _ := util.Map2Json(baseMap[model.TpBase_JO_52684.Code].(map[string]interface{}))
+	hsGoldJson, _ := util.Map2Json(baseMap[model.TpBase_JO_52685.Code].(map[string]interface{}))
 
 	log.Info(goldJson, tzGoldJson, hsGoldJson)
 
@@ -129,29 +141,115 @@ func getTodayPrice() (string, error) {
 }
 
 func getLFXPrice() (string, error) {
-	return "", nil
+	lfxMap, err := getRespMap([]model.ProductCode{model.LFX_Gold, model.LFX_PtGold})
+	if err != nil {
+		// 获取响应结果失败
+		return "err", err
+	}
+
+	goldCp, ptGoldCp := goldPrice(model.LFX, lfxMap, model.LFX_Gold, model.LFX_PtGold)
+
+	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.LFX,
+		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+	)
+
+	return content, nil
 }
 
 func getZDSPrice() (string, error) {
-	return "", nil
+	zdsMap, err := getRespMap([]model.ProductCode{model.ZDS_Gold, model.ZDS_PtGold})
+	if err != nil {
+		// 获取响应结果失败
+		return "err", err
+	}
+
+	goldCp, ptGoldCp := goldPrice(model.ZDS, zdsMap, model.ZDS_Gold, model.ZDS_PtGold)
+
+	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.ZDS,
+		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+	)
+
+	return content, nil
 }
 
 func getZSSPrice() (string, error) {
-	return "", nil
+	zssMap, err := getRespMap([]model.ProductCode{model.ZSS_Gold, model.ZSS_PtGold})
+	if err != nil {
+		// 获取响应结果失败
+		return "err", err
+	}
+
+	goldCp, ptGoldCp := goldPrice(model.ZSS, zssMap, model.ZSS_Gold, model.ZSS_PtGold)
+
+	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.ZSS,
+		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+	)
+	return content, nil
 }
 
 func getZDFPrice() (string, error) {
-	return "", nil
+	zdfMap, err := getRespMap([]model.ProductCode{model.ZDF_Gold, model.ZDF_PtGold})
+	if err != nil {
+		// 获取响应结果失败
+		return "err", err
+	}
+
+	goldCp, ptGoldCp := goldPrice(model.ZDF, zdfMap, model.ZDF_Gold, model.ZDF_PtGold)
+
+	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.ZDF,
+		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+	)
+	return content, nil
 }
 
 func getZLFPrice() (string, error) {
-	return "", nil
+	zlfMap, err := getRespMap([]model.ProductCode{model.ZLF_Gold, model.ZLF_PtGold})
+	if err != nil {
+		// 获取响应结果失败
+		return "err", err
+	}
+
+	goldCp, ptGoldCp := goldPrice(model.ZLF, zlfMap, model.ZLF_Gold, model.ZLF_PtGold)
+
+	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.ZLF,
+		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+	)
+	return content, nil
 }
 
 func getLFZBPrice() (string, error) {
-	return "", nil
+	lfzbMap, err := getRespMap([]model.ProductCode{model.LFZB_Gold, model.LFZB_PtGold})
+	if err != nil {
+		// 获取响应结果失败
+		return "err", err
+	}
+
+	goldCp, ptGoldCp := goldPrice(model.LFZB, lfzbMap, model.LFZB_Gold, model.LFZB_PtGold)
+
+	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.LFZB,
+		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+	)
+	return content, nil
 }
 
 func getLMPrice() (string, error) {
-	return "", nil
+	lmMap, err := getRespMap([]model.ProductCode{model.LM_Gold, model.LM_PtGold})
+	if err != nil {
+		// 获取响应结果失败
+		return "err", err
+	}
+
+	goldCp, ptGoldCp := goldPrice(model.LM, lmMap, model.LM_Gold, model.LM_PtGold)
+
+	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.LM,
+		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+	)
+	return content, nil
 }

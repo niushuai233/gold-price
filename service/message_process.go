@@ -6,6 +6,7 @@ import (
 	"github.com/tencent-connect/botgo/log"
 	"gold-price/util"
 	"strings"
+	"time"
 )
 
 func atMessage(event *dto.WSPayload, data *dto.WSATMessageData) error {
@@ -16,8 +17,18 @@ func atMessage(event *dto.WSPayload, data *dto.WSATMessageData) error {
 	return nil
 }
 
+func catchErrHandler(messageData *dto.WSATMessageData) {
+	if r := recover(); r != nil {
+		log.Error("catchErrHandler: ", r)
+		content := time.Now().String() + " atMessageHandler出现了不知道是什么玩意的异常"
+		util.PostMessage(api, ctx, args.ChannelId, messageData, content)
+	}
+}
+
 // 消息处理器
 func atMessageHandler(event *dto.WSPayload, messageData *dto.WSATMessageData) error {
+	// 捕捉异常 防止程序停止
+	defer catchErrHandler(messageData)
 	res := message.ParseCommand(messageData.Content)
 	var defaultContent = "\n未知命令[ " + res.Cmd + " ], 请联系开发者添加."
 
