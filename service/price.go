@@ -1,18 +1,24 @@
 package gold_price
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/tencent-connect/botgo/log"
 	"gold-price/model"
+	"gold-price/util"
+	"strconv"
+	"strings"
+	"time"
 )
 
 const (
-	BASE_MESSAGE_TEMPLATE  = "\n%s\n\t黄金基础价格：%f\n\t投资金价格：%f\n\t回收价格: %f"
-	BRAND_MESSAGE_TEMPLATE = "\n%s\n\t黄金价格：%f\n\t铂金价格：%f"
-)
-
-const (
-	CODE_TODAY_PRICEX = "JO_52683,JO_52684,JO_52685"
+	FLAG                   = "flag"
+	CODES                  = "CODES"
+	CURR_TIMES             = "CURR_TIMES"
+	QUOTE_JSON             = "var quote_json ="
+	BASE_MESSAGE_TEMPLATE  = "\n%s\n  > %s：%s\n  > %s：%s\n  > %s：%s"
+	BRAND_MESSAGE_TEMPLATE = "\n%s\n\t%s：%f\n\t%s：%f"
 )
 
 const (
@@ -23,27 +29,122 @@ const (
 
 func price(brand string) (string, error) {
 	log.Info("brand: ", brand)
+
 	switch brand {
 	case model.TodayPrice:
-
-		break
+		return getTodayPrice()
 	case model.LFX:
-		break
+		return getLFXPrice()
 	case model.ZDS:
-		break
+		return getZDSPrice()
 	case model.ZSS:
-		break
+		return getZSSPrice()
 	case model.ZDF:
-		break
+		return getZDFPrice()
 	case model.ZLF:
-		break
+		return getZLFPrice()
 	case model.LFZB:
-		break
+		return getLFZBPrice()
 	case model.LM:
-		break
+		return getLMPrice()
 	default:
 		return "", errors.New("未知品牌: " + brand)
 	}
 
+	return "", nil
+}
+
+func formatUrl(url string, productCodes []model.ProductCode) string {
+
+	target := ""
+	for index, productCode := range productCodes {
+		target = target + productCode.Code
+		if index != len(productCodes)-1 {
+			target = target + ","
+		}
+	}
+
+	return strings.ReplaceAll(strings.ReplaceAll(url, CODES, target), CURR_TIMES, strconv.FormatInt(time.Now().UnixMilli(), 10))
+}
+
+func formatFloatPrice(price float64) string {
+
+	result := strconv.FormatFloat(price, 'f', 6, 64)
+	for strings.HasSuffix(result, "0") {
+		result = strings.TrimSuffix(result, "0")
+	}
+	return result
+}
+
+func getTodayPrice() (string, error) {
+	url := formatUrl(URL_PRICE, []model.ProductCode{model.TpBase_JO_52683, model.TpBase_JO_52684, model.TpBase_JO_52685})
+	respBody, err := util.Get(url)
+	if err != nil {
+		return "", err
+	}
+	respBody = strings.ReplaceAll(respBody, QUOTE_JSON, "")
+	log.Infof(respBody)
+	// 重组resp
+
+	//var codePrice model.CodePrice
+	json2Map, err := util.Json2Map(respBody)
+
+	flag := json2Map[FLAG]
+	tmp := fmt.Sprint(flag)
+	if tmp != "true" {
+		return "", errors.New("请求接口失败: " + url)
+	}
+
+	baseGold := json2Map[model.TpBase_JO_52683.Code]
+	baseGold_TZ := json2Map[model.TpBase_JO_52684.Code]
+	baseGold_TZ_HS := json2Map[model.TpBase_JO_52685.Code]
+
+	goldJson, _ := util.Map2Json(baseGold.(map[string]interface{}))
+	tzGoldJson, _ := util.Map2Json(baseGold_TZ.(map[string]interface{}))
+	hsGoldJson, _ := util.Map2Json(baseGold_TZ_HS.(map[string]interface{}))
+
+	log.Info(goldJson, tzGoldJson, hsGoldJson)
+
+	var goldCp model.CodePrice
+	var tzGoldCp model.CodePrice
+	var hsGoldCp model.CodePrice
+	err = json.Unmarshal([]byte(goldJson), &goldCp)
+	err = json.Unmarshal([]byte(tzGoldJson), &tzGoldCp)
+	err = json.Unmarshal([]byte(hsGoldJson), &hsGoldCp)
+
+	content := fmt.Sprintf(BASE_MESSAGE_TEMPLATE, model.TodayPrice,
+		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
+		tzGoldCp.ShowName, formatFloatPrice(tzGoldCp.Q1),
+		hsGoldCp.ShowName, formatFloatPrice(hsGoldCp.Q1),
+	)
+
+	return content, nil
+}
+
+func getLFXPrice() (string, error) {
+	return "", nil
+}
+
+func getZDSPrice() (string, error) {
+	return "", nil
+}
+
+func getZSSPrice() (string, error) {
+	return "", nil
+}
+
+func getZDFPrice() (string, error) {
+	return "", nil
+}
+
+func getZLFPrice() (string, error) {
+	return "", nil
+}
+
+func getLFZBPrice() (string, error) {
+	return "", nil
+}
+
+func getLMPrice() (string, error) {
 	return "", nil
 }

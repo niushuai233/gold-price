@@ -4,80 +4,80 @@ func init() {
 }
 
 // 产品编码
-var brands = [...]Brand{
+var BrandArray = [...]Brand{
 	// TodayPrice = "今日金价"
 	{
-		product:   TpBase_JO_52683,
-		brandName: TodayPrice,
+		Product:   TpBase_JO_52683,
+		BrandName: TodayPrice,
 	}, {
-		product:   TpBase_JO_52684,
-		brandName: TodayPrice,
+		Product:   TpBase_JO_52684,
+		BrandName: TodayPrice,
 	}, {
-		product:   TpBase_JO_52685,
-		brandName: TodayPrice,
+		Product:   TpBase_JO_52685,
+		BrandName: TodayPrice,
 	},
 	// LFX        = "老凤祥"
 	{
-		product:   LFX_Gold,
-		brandName: LFX,
+		Product:   LFX_Gold,
+		BrandName: LFX,
 	},
 	{
-		product:   LFX_PtGold,
-		brandName: LFX,
+		Product:   LFX_PtGold,
+		BrandName: LFX,
 	},
 	// ZDS        = "周大生"
 	{
-		product:   ZDS_Gold,
-		brandName: ZDS,
+		Product:   ZDS_Gold,
+		BrandName: ZDS,
 	},
 	{
-		product:   ZDS_PtGold,
-		brandName: ZDS,
+		Product:   ZDS_PtGold,
+		BrandName: ZDS,
 	},
 	// ZSS        = "周生生"
 	{
-		product:   ZSS_Gold,
-		brandName: ZSS,
+		Product:   ZSS_Gold,
+		BrandName: ZSS,
 	},
 	{
-		product:   ZSS_PtGold,
-		brandName: ZSS,
+		Product:   ZSS_PtGold,
+		BrandName: ZSS,
 	},
 	// ZDF        = "周大福"
 	{
-		product:   ZDF_Gold,
-		brandName: ZDF,
+		Product:   ZDF_Gold,
+		BrandName: ZDF,
 	},
 	{
-		product:   ZDF_PtGold,
-		brandName: ZDF,
+		Product:   ZDF_PtGold,
+		BrandName: ZDF,
 	},
 	// ZLF        = "周六福"
 	{
-		product:   ZLF_Gold,
-		brandName: ZLF,
+		Product:   ZLF_Gold,
+		BrandName: ZLF,
 	},
 	{
-		product:   ZLF_PtGold,
-		brandName: ZLF,
+		Product:   ZLF_PtGold,
+		BrandName: ZLF,
 	},
 	// LFZB       = "六福珠宝"
 	{
-		product:   LFZB_Gold,
-		brandName: LFZB,
+		Product:   LFZB_Gold,
+		BrandName: LFZB,
 	},
 	{
-		product:   LFZB_PtGold,
-		brandName: LFZB,
+		Product:   LFZB_PtGold,
+		BrandName: LFZB,
 	},
 	// LM         = "老庙"
 	{
-		product:   LM_Gold,
-		brandName: LM,
+		Product:   LM_Gold,
+		BrandName: LM,
 	},
 	{
-		product:   LM_PtGold,
-		brandName: LM,
+		Product:   LM_PtGold,
+		BrandName: LM,
 	},
 }
 
@@ -85,79 +85,79 @@ var brands = [...]Brand{
 var (
 	// 中国黄金
 	TpBase_JO_52683 = ProductCode{
-		code: "JO_52683",
-		name: "中国黄金基础金价",
+		Code: "JO_52683",
+		Name: "中国黄金基础金价",
 	}
 	TpBase_JO_52684 = ProductCode{
-		code: "JO_52684",
-		name: "投资金条/储值金条/元宝金：零售价",
+		Code: "JO_52684",
+		Name: "投资金条/储值金条/元宝金：零售价",
 	}
 	TpBase_JO_52685 = ProductCode{
-		code: "JO_52685",
-		name: "投资金条/储值金条/元宝金：回购价",
+		Code: "JO_52685",
+		Name: "投资金条/储值金条/元宝金：回购价",
 	}
 	// LFX        = "老凤祥"
 	LFX_PtGold = ProductCode{
-		code: "JO_42658",
-		name: "铂金价格",
+		Code: "JO_42658",
+		Name: "铂金价格",
 	}
 	LFX_Gold = ProductCode{
-		code: "JO_42657",
-		name: "黄金价格",
+		Code: "JO_42657",
+		Name: "黄金价格",
 	}
 	// ZDS        = "周大生"
 	ZDS_PtGold = ProductCode{
-		code: "JO_52677",
-		name: "铂金价格",
+		Code: "JO_52677",
+		Name: "铂金价格",
 	}
 	ZDS_Gold = ProductCode{
-		code: "JO_52678",
-		name: "黄金价格",
+		Code: "JO_52678",
+		Name: "黄金价格",
 	}
 	// ZSS        = "周生生"
 	ZSS_PtGold = ProductCode{
-		code: "JO_42626",
-		name: "铂金价格",
+		Code: "JO_42626",
+		Name: "铂金价格",
 	}
 	ZSS_Gold = ProductCode{
-		code: "JO_42625",
-		name: "黄金价格",
+		Code: "JO_42625",
+		Name: "黄金价格",
 	}
 	// ZDF        = "周大福"
 	ZDF_PtGold = ProductCode{
-		code: "JO_42661",
-		name: "铂金价格",
+		Code: "JO_42661",
+		Name: "铂金价格",
 	}
 	ZDF_Gold = ProductCode{
-		code: "JO_42660",
-		name: "黄金价格",
+		Code: "JO_42660",
+		Name: "黄金价格",
 	}
 	// ZLF        = "周六福"
 	ZLF_PtGold = ProductCode{
-		code: "JO_42654",
-		name: "铂金价格",
+		Code: "JO_42654",
+		Name: "铂金价格",
 	}
 	ZLF_Gold = ProductCode{
-		code: "JO_42653",
-		name: "黄金价格",
+		Code: "JO_42653",
+		Name: "黄金价格",
 	}
 	// LFZB       = "六福珠宝"
 	LFZB_PtGold = ProductCode{
-		code: "JO_42647",
-		name: "铂金价格",
+		Code: "JO_42647",
+		Name: "铂金价格",
 	}
 	LFZB_Gold = ProductCode{
-		code: "JO_42646",
-		name: "黄金价格",
+		Code: "JO_42646",
+		Name: "黄金价格",
 	}
 	// LM         = "老庙"
 	LM_PtGold = ProductCode{
-		code: "JO_42635",
-		name: "铂金价格",
+		Code: "JO_42635",
+		Name: "铂金价格",
 	}
 	LM_Gold = ProductCode{
-		code: "JO_42634",
-		name: "黄金价格",
+		Code: "JO_42634",
+		Name: "黄金价格",
 	}
 )
 
@@ -174,55 +174,55 @@ const (
 
 // ProductCode 产品代码
 type ProductCode struct {
-	// code
-	code string
-	// name
-	name string
+	// Code
+	Code string
+	// Name
+	Name string
 }
 
 // Brand 品牌
 type Brand struct {
 	// 品牌代码
-	product ProductCode
+	Product ProductCode
 	// 品牌名称
-	brandName string
+	BrandName string
 }
 
 // PriceResp 价格响应结果
 type PriceResp struct {
 	// 响应标识
-	flag bool
+	Flag bool
 	// 错误代码
-	errorCode int
+	ErrorCode int
 	// 不同产品的价格集合
-	codePrices [...]CodePrice
+	CodePrices []CodePrice
 }
 
 // CodePrice 产品价格
 type CodePrice struct {
 	// 产品代码
-	code string
+	Code string `json:"code"`
 	// 展示code
-	showCode string
+	ShowCode string `json:"showCode"`
 	// 展示name
-	showName string
+	ShowName string `json:"showName"`
 	// 单位
-	unit string
+	Unit string `json:"unit"`
 	// 不知道干啥的
-	status int
+	Status int `json:"status"`
 	// 不知道干啥的
-	digits int
-	q1     int
-	q2     int
-	q3     int
-	q4     int
-	q60    int
-	q63    int
-	q70    int
-	q80    int
-	q128   int
-	q129   int
-	q193   int
+	Digits int     `json:"digits"`
+	Q1     float64 `json:"q1"`
+	Q2     float64 `json:"q2"`
+	Q3     float64 `json:"q3"`
+	Q4     float64 `json:"q4"`
+	Q60    float64 `json:"q60"`
+	Q63    float64 `json:"q63"`
+	Q70    float64 `json:"q70"`
+	Q80    float64 `json:"q80"`
+	Q128   float64 `json:"q128"`
+	Q129   float64 `json:"q129"`
+	Q193   float64 `json:"q193"`
 }
 
 // StartArgs 启动参数

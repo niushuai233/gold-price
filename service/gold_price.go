@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/robfig/cron"
 	"github.com/tencent-connect/botgo"
+	"github.com/tencent-connect/botgo/event"
 	"github.com/tencent-connect/botgo/log"
 	"github.com/tencent-connect/botgo/openapi"
 	"github.com/tencent-connect/botgo/token"
@@ -47,9 +48,16 @@ func ServiceRun(appConfig *model.AppConfig, startArgs *model.StartArgs) {
 	fmt.Println("service run...")
 
 	// 开启定时任务
-	timerRun()
+	//timerRun()
 	// 开启对话通道
 	chatChannelRun()
+
+	//content, err := price(model.TodayPrice)
+	//if err != nil {
+	//	log.Error(err)
+	//	os.Exit(1)
+	//}
+	//log.Info(content)
 }
 
 // 聊天通道 @机器人消息时回复信息
@@ -61,7 +69,9 @@ func chatChannelRun() {
 		os.Exit(1)
 	}
 
-	intent := websocket.RegisterHandlers(atMessageHandler)
+	// 消息处理器
+	var atMessage event.ATMessageEventHandler = atMessageHandler
+	intent := websocket.RegisterHandlers(atMessage)
 	botgo.NewSessionManager().Start(ws, botToken, &intent)
 }
 
