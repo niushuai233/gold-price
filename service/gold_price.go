@@ -81,7 +81,7 @@ func timerRun() {
 	//cron表达式由6部分组成，从左到右分别表示 秒 分 时 日 月 星期
 	timer := cron.New()
 
-	timer.AddFunc("00 10,18 * * *", func() {
+	timer.AddFunc("00 8,10,12,14,16,18,20 * * *", func() {
 		content := getAllPriceContent()
 		log.Info("定时主动推送: ", content)
 		util.PostMessage(api, ctx, args.ChannelId, "", content)
