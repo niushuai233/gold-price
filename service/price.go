@@ -132,9 +132,9 @@ func getTodayPrice() (string, error) {
 	json.Unmarshal([]byte(hsGoldJson), &hsGoldCp)
 
 	content := fmt.Sprintf(BASE_MESSAGE_TEMPLATE, model.TodayPrice,
-		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
-		tzGoldCp.ShowName, formatFloatPrice(tzGoldCp.Q1),
-		hsGoldCp.ShowName, formatFloatPrice(hsGoldCp.Q1),
+		goldCp.ShowName, formatFloatPrice(goldCp.Q63),
+		tzGoldCp.ShowName, formatFloatPrice(tzGoldCp.Q63),
+		hsGoldCp.ShowName, formatFloatPrice(hsGoldCp.Q63),
 	)
 
 	return content, nil
@@ -150,8 +150,8 @@ func getLFXPrice() (string, error) {
 	goldCp, ptGoldCp := goldPrice(model.LFX, lfxMap, model.LFX_Gold, model.LFX_PtGold)
 
 	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.LFX,
-		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
-		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+		goldCp.ShowName, formatFloatPrice(goldCp.Q63),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q63),
 	)
 
 	return content, nil
@@ -167,8 +167,8 @@ func getZDSPrice() (string, error) {
 	goldCp, ptGoldCp := goldPrice(model.ZDS, zdsMap, model.ZDS_Gold, model.ZDS_PtGold)
 
 	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.ZDS,
-		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
-		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+		goldCp.ShowName, formatFloatPrice(goldCp.Q63),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q63),
 	)
 
 	return content, nil
@@ -184,8 +184,8 @@ func getZSSPrice() (string, error) {
 	goldCp, ptGoldCp := goldPrice(model.ZSS, zssMap, model.ZSS_Gold, model.ZSS_PtGold)
 
 	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.ZSS,
-		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
-		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+		goldCp.ShowName, formatFloatPrice(goldCp.Q63),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q63),
 	)
 	return content, nil
 }
@@ -200,8 +200,8 @@ func getZDFPrice() (string, error) {
 	goldCp, ptGoldCp := goldPrice(model.ZDF, zdfMap, model.ZDF_Gold, model.ZDF_PtGold)
 
 	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.ZDF,
-		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
-		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+		goldCp.ShowName, formatFloatPrice(goldCp.Q63),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q63),
 	)
 	return content, nil
 }
@@ -216,8 +216,8 @@ func getZLFPrice() (string, error) {
 	goldCp, ptGoldCp := goldPrice(model.ZLF, zlfMap, model.ZLF_Gold, model.ZLF_PtGold)
 
 	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.ZLF,
-		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
-		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+		goldCp.ShowName, formatFloatPrice(goldCp.Q63),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q63),
 	)
 	return content, nil
 }
@@ -232,8 +232,8 @@ func getLFZBPrice() (string, error) {
 	goldCp, ptGoldCp := goldPrice(model.LFZB, lfzbMap, model.LFZB_Gold, model.LFZB_PtGold)
 
 	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.LFZB,
-		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
-		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+		goldCp.ShowName, formatFloatPrice(goldCp.Q63),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q63),
 	)
 	return content, nil
 }
@@ -248,8 +248,8 @@ func getLMPrice() (string, error) {
 	goldCp, ptGoldCp := goldPrice(model.LM, lmMap, model.LM_Gold, model.LM_PtGold)
 
 	content := fmt.Sprintf(BRAND_MESSAGE_TEMPLATE, model.LM,
-		goldCp.ShowName, formatFloatPrice(goldCp.Q1),
-		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q1),
+		goldCp.ShowName, formatFloatPrice(goldCp.Q63),
+		ptGoldCp.ShowName, formatFloatPrice(ptGoldCp.Q63),
 	)
 	return content, nil
 }
